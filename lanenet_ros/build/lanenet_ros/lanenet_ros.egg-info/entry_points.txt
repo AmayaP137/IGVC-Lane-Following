@@ -1,0 +1,2 @@
+[console_scripts]
+lane_detector = lanenet_ros.lane_detector_node:main
