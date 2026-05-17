@@ -1,0 +1,32 @@
+# lane_follower package — runtime parameters
+# Adjust these without recompiling; loaded by the launch file.
+
+camera_node:
+  ros__parameters:
+    device_index:  0        # /dev/video0  (change for CSI cameras)
+    frame_rate:    30.0     # Hz
+    image_width:   640
+    image_height:  480
+    topic:         /camera/image_raw
+
+detector_node:
+  ros__parameters:
+    # !! UPDATE THIS PATH to your actual .onnx file location !!
+    model_path:     /home/amaya28/ros2_ws/src/lane_follower_ros2/lane_follower/models/lane_detector.onnx
+    input_width:    512     # must match model training resolution
+    input_height:   256
+    camera_topic:   /camera/image_raw
+    mask_topic:     /lane/mask
+    centroid_topic: /lane/centroid
+    roi_top_frac:   0.45    # ignore top 45% of frame (sky / horizon)
+
+controller_node:
+  ros__parameters:
+    base_speed:         0.15   # m/s forward speed (start low on Pi 5)
+    kp:                 0.8    # proportional gain — increase if sluggish
+    kd:                 0.1    # derivative gain   — increase to dampen oscillation
+    speed_reduction:    0.5    # fraction of speed lost at maximum steering
+    max_angular_speed:  1.0    # rad/s hard clamp
+    timeout_sec:        1.0    # seconds before watchdog stops vehicle
+    centroid_topic:     /lane/centroid
+    cmd_vel_topic:      /cmd_vel
