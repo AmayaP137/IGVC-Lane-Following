@@ -16,18 +16,11 @@ def generate_launch_description():
     params_file = str(Path(pkg_share) / 'config' / 'params.yaml')
 
     return LaunchDescription([
-        # ── Camera node ───────────────────────────────────────────────────────
-        Node(
-            package    = 'lane_follower',
-            executable = 'camera_node',
-            name       = 'camera_node',
-            output     = 'screen',
-            parameters = [params_file],
-        ),
+    
 
         # ── Lane detector node ────────────────────────────────────────────────
         Node(
-            package    = 'lane_follower',
+            package    = 'IGVC_lane_follow',
             executable = 'detector_node',
             name       = 'detector_node',
             output     = 'screen',
@@ -36,7 +29,7 @@ def generate_launch_description():
 
         # ── Lane controller node ──────────────────────────────────────────────
         Node(
-            package    = 'lane_follower',
+            package    = 'IGVC_lane_follow',
             executable = 'controller_node',
             name       = 'controller_node',
             output     = 'screen',
