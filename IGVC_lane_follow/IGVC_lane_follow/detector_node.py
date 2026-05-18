@@ -1,23 +1,4 @@
 #!/usr/bin/env python3
-"""
-detector_node.py
-================
-Subscribes to /camera/image_raw, runs the ONNX lane-segmentation model,
-and publishes:
-  /lane/mask      (sensor_msgs/Image, mono8)   – class map: 0=bg 1=white 2=yellow
-  /lane/centroid  (geometry_msgs/PointStamped) – lane-centre x,y in image coords
-
-The centroid message drives controller_node.py.
-
-Parameters:
-  model_path     (str)   – absolute path to lane_detector.onnx
-  input_width    (int,   default 512)
-  input_height   (int,   default 256)
-  camera_topic   (str,   default "/camera/image_raw")
-  mask_topic     (str,   default "/lane/mask")
-  centroid_topic (str,   default "/lane/centroid")
-  roi_top_frac   (float, default 0.4) – ignore top N% of image (sky)
-"""
 
 import numpy as np
 import cv2
@@ -44,13 +25,7 @@ def preprocess(bgr_frame: np.ndarray, h: int, w: int) -> np.ndarray:
 
 
 def extract_centroid(mask: np.ndarray, roi_top: int) -> tuple[float, float] | None:
-    """
-    Given a 3-class mask (H×W uint8), find the horizontal midpoint between
-    the white lane (class 1) and yellow lane (class 2) centroids in the lower
-    portion of the image (below roi_top).
-
-    Returns (cx, cy) in pixel coords, or None if lanes not detected.
-    """
+    
     roi_mask = mask[roi_top:, :]
 
     white_pts  = np.column_stack(np.where(roi_mask == 1))
@@ -88,7 +63,8 @@ class DetectorNode(Node):
         super().__init__('detector_node')
 
         # ── Parameters ────────────────────────────────────────────────────────
-        self.declare_parameter('model_path',     '')
+        #might needed to be further edited to fit the correct path
+        self.declare_parameter('model_path',     '/IGVC_lane_follow/models/lane_detector.onnx') 
         self.declare_parameter('input_width',    512)
         self.declare_parameter('input_height',   256)
         self.declare_parameter('camera_topic',   '/camera/image_raw')
